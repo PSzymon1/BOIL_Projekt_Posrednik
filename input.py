@@ -6,12 +6,9 @@ from PyQt5 import QtWidgets
 
 from main import *
 
-l_odb=3;
-l_dos=3;
-
 class Table_odbiorcy:
 
-    def __init__(self, root, txt):
+    def __init__(self, root, txt,l_dos,l_odb):
 
         lst = [("Odbiorca", 'Popyt', 'Cena')]
 
@@ -33,7 +30,7 @@ class Table_odbiorcy:
 
 class Table_dostawcy:
 
-    def __init__(self, root, txt):
+    def __init__(self, root, txt,l_dos,l_odb):
 
         lst = [("Dostawca", 'Podaż', 'Koszt')]
 
@@ -55,7 +52,7 @@ class Table_dostawcy:
 
 class Table_koszty_transportu:
 
-    def __init__(self, root, txt):
+    def __init__(self, root, txt,l_dos,l_odb):
 
         total_rows = l_dos+1
         total_columns = l_odb+1
@@ -73,14 +70,14 @@ class Table_koszty_transportu:
                 else:
                     txt.append(self.e)
 
-def get_data():
+def get_data(l_dos,l_odb):
     txt_odbiorcy=[]
     txt_dostawcy=[]
     txt_transport=[]
     root=Tk()
-    t1=Table_odbiorcy(root,txt_odbiorcy)
-    t2=Table_dostawcy(root,txt_dostawcy)
-    t3=Table_koszty_transportu(root,txt_transport)
+    t1=Table_odbiorcy(root,txt_odbiorcy,l_dos,l_odb)
+    t2=Table_dostawcy(root,txt_dostawcy,l_dos,l_odb)
+    t3=Table_koszty_transportu(root,txt_transport,l_dos,l_odb)
 
     def clicked():
         sellers = []
@@ -93,40 +90,40 @@ def get_data():
         if valid==1:
             #odbiorcy
             popyt=0
-            while (i < len(txt_odbiorcy)):
-                buyers[i]=int(txt_odbiorcy[i].get())
+            while (i < len(txt_odbiorcy)/2):
+                buyers.append(int(txt_odbiorcy[i*2].get()))
                 popyt+=buyers[i]
-                i+=2
-            buyers[i]=popyt
+                i+=1
+            buyers.append(popyt)
 
             #dostawcy
             podaz=0
-            while (i < len(txt_dostawcy)):
-                sellers[i] = int(txt_dostawcy[i].get())
+            while (i < len(txt_dostawcy)/2):
+                sellers.append(int(txt_dostawcy[i*2].get()))
                 podaz+=sellers[i]
-                i+=2
-            sellers[i]=podaz
+                i+=1
+            sellers.append(podaz)
 
             #transport
             i=0
-            temp=[]
             while (i < len(txt_dostawcy)):
                 while (j < len(txt_odbiorcy)):
-                    temp[j]=int(txt_odbiorcy[i+1])-int(txt_transport[j+i*len(txt_odbiorcy)].get())-int(txt_dostawcy[j+1])
+                    temp = []
+                    temp.append(int(txt_odbiorcy[i+1].get())-int(txt_transport[j+i*len(txt_odbiorcy)].get())-int(txt_dostawcy[j+1].get()))
                     j+=2
-                earnings[i]=temp
-                temp=[]
+                earnings.append(temp)
                 i+=2
 
 
 
 
-            app = QApplication(sys.argv)
-            app.aboutToQuit.connect(app.deleteLater)
-            app.setStyle(QStyleFactory.create("gtk"))
+            #app = QApplication(sys.argv)
+            #app.aboutToQuit.connect(app.deleteLater)
+            #app.setStyle(QStyleFactory.create("gtk"))
             #screen = PrettyWidget(events, activities)
             #screen.show()
-            app.exec_()
+            #app.exec_()
+            print("nice")
         else:
             app = QApplication([])
             error_dialog = QtWidgets.QErrorMessage()
@@ -137,4 +134,33 @@ def get_data():
     btn.grid(column=8, row=l_odb+l_dos+2)
     root.mainloop()
 
+
+def step1():
+    root=Tk()
+
+    def clicked():
+        l_odb=int(txt_odb.get("1.0", "end-1c"))
+        l_dos=int(txt_dos.get("1.0", "end-1c"))
+        print(l_dos,l_odb)
+
+        #app = QApplication(sys.argv)
+        #app.aboutToQuit.connect(app.deleteLater)
+        #app.setStyle(QStyleFactory.create("gtk"))
+        #app.exec_()
+        get_data(l_dos,l_odb)
+
+    label1 = Label(text="Liczba odbiorców =")
+    txt_odb = Text(root, width=5, height=1)
+    label2 = Label(text="Liczba dostawców =")
+    txt_dos = Text(root, width=5, height=1)
+    btn = Button(root, text="Zatwierdź", command=clicked)
+
+    label1.grid(column=1, row=1)
+    txt_odb.grid(column=2, row=1)
+    label2.grid(column=1, row=2)
+    txt_dos.grid(column=2, row=2)
+    btn.grid(column=1, row=3)
+    root.mainloop()
+
 #get_data()
+step1()
