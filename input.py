@@ -106,13 +106,26 @@ def get_data(l_dos,l_odb):
 
             #transport
             i=0
-            while (i < len(txt_dostawcy)):
-                while (j < len(txt_odbiorcy)):
-                    temp = []
-                    temp.append(int(txt_odbiorcy[i+1].get())-int(txt_transport[j+i*len(txt_odbiorcy)].get())-int(txt_dostawcy[j+1].get()))
-                    j+=2
+            while (i < len(txt_dostawcy)/2):
+                temp = []
+                while (j < len(txt_odbiorcy)/2):
+                    temp.append(int(txt_odbiorcy[j*2+1].get())-int(txt_transport[j+i*l_odb].get())-int(txt_dostawcy[i*2+1].get()))
+                    j+=1
+                    print(len(txt_odbiorcy), j, i, temp)
+                temp.append(0)
+                print(temp)
                 earnings.append(temp)
-                i+=2
+                j=0
+                i+=1
+            j=0
+            temp = []
+            while (j < len(txt_odbiorcy)+2):
+                temp.append(0)
+                j+=2
+            earnings.append(temp)
+
+
+
 
 
 
@@ -123,7 +136,7 @@ def get_data(l_dos,l_odb):
             #screen = PrettyWidget(events, activities)
             #screen.show()
             #app.exec_()
-            print("nice")
+            print(earnings)
         else:
             app = QApplication([])
             error_dialog = QtWidgets.QErrorMessage()
