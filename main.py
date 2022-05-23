@@ -1,3 +1,4 @@
+
 import numpy as np
 
 
@@ -50,3 +51,4 @@ if __name__ == '__main__':
     earnings = [[12, 6, 0],[1, 4, 0],[3, -1, 0],[0, 0, 0]]
     tab = calculate_total(sellers, buyers, earnings)
     print_table(tab)
+
