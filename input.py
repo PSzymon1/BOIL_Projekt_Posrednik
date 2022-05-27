@@ -65,9 +65,9 @@ class Table_koszty_transportu:
                 self.e.grid(row=i+3, column=j+6)
                 if (i == 0 and j>0):
                     self.e.insert(END, "O"+str(j))
-                elif (j == 0):
+                elif (j == 0 and i>0):
                     self.e.insert(END, "D"+str(i))
-                else:
+                elif (i!=0 and j!=0):
                     txt.append(self.e)
 
 def get_data(l_dos,l_odb):
@@ -94,15 +94,16 @@ def get_data(l_dos,l_odb):
                 buyers.append(int(txt_odbiorcy[i*2].get()))
                 popyt+=buyers[i]
                 i+=1
-            buyers.append(popyt)
 
+            i=0
             #dostawcy
             podaz=0
             while (i < len(txt_dostawcy)/2):
                 sellers.append(int(txt_dostawcy[i*2].get()))
                 podaz+=sellers[i]
                 i+=1
-            sellers.append(podaz)
+            sellers.append(popyt)
+            buyers.append(podaz)
 
             #transport
             i=0
@@ -111,9 +112,9 @@ def get_data(l_dos,l_odb):
                 while (j < len(txt_odbiorcy)/2):
                     temp.append(int(txt_odbiorcy[j*2+1].get())-int(txt_transport[j+i*l_odb].get())-int(txt_dostawcy[i*2+1].get()))
                     j+=1
-                    print(len(txt_odbiorcy), j, i, temp)
+                    #print(len(txt_odbiorcy), j, i, temp)
                 temp.append(0)
-                print(temp)
+                #print(temp)
                 earnings.append(temp)
                 j=0
                 i+=1
@@ -137,6 +138,10 @@ def get_data(l_dos,l_odb):
             #screen.show()
             #app.exec_()
             print(earnings)
+            tab = calculate_total(sellers, buyers, earnings)
+            print(123)
+            #print(np.transpose(np.matrix(tab)))
+            print_table(tab)
         else:
             app = QApplication([])
             error_dialog = QtWidgets.QErrorMessage()

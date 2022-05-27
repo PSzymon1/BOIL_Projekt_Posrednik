@@ -44,11 +44,35 @@ def calculate_total(sellers, buyers, earnings):
 
     return table
 
+def calculate_optimum(alpha, beta):
+    return 0
+
+def calcucate_ab(tab, earnings):
+    alpha = 0
+    return 0
+
+def is_optimal(tab):
+    return 0
+
+def cycle(tab):
+    return 0
+
+def calculate_step(tab, earnings):
+    alpha, beta = calcucate_ab(tab, earnings)
+    stage = calculate_optimum(alpha, beta)
+    if is_optimal(tab):
+        return tab
+    tab = cycle(tab)
+    while(is_optimal(stage)):
+        alpha, beta = calcucate_ab(tab, earnings)
+        stage = calculate_optimum(alpha, beta)
+    return tab
 
 if __name__ == '__main__':
     sellers = [20, 30, 65]
     buyers = [10, 28, 27, 50]
     earnings = [[12, 6, 0],[1, 4, 0],[3, -1, 0],[0, 0, 0]]
-    tab = calculate_total(sellers, buyers, earnings)
-    print_table(tab)
 
+    tab = calculate_total(sellers, buyers, earnings)
+    #print_table(tab)
+    print(np.transpose(np.matrix(tab)))
