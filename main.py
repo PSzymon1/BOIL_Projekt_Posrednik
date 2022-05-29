@@ -1,4 +1,3 @@
-
 import numpy as np
 
 
@@ -7,6 +6,7 @@ def print_table(table):
         for j in range(len(table[i])):
             print(str(table[i][j]) + "; ", end="")
         print()
+
 
 def iterate(table, earnings):
     alpha = [None for _ in range(len(table[0]))]
@@ -42,37 +42,98 @@ def calculate_total(sellers, buyers, earnings):
                         temp_buyers[i] -= temp_sellers[j]
                         temp_sellers[j] = 0
 
+    table = calculate_step(table, earnings)
     return table
 
-def calculate_optimum(alpha, beta):
-    return 0
 
-def calcucate_ab(tab, earnings):
-    alpha = 0
-    return 0
+def calculate_optimum(tab, alpha, beta, earnings):
+    stage = [[None for _ in range(len(alpha))] for _ in range(len(beta))]
 
-def is_optimal(tab):
-    return 0
+    for i in range(len(beta)):
+        for j in range(len(alpha)):
+            if tab[i][j] == 0:
+                stage[i][j] = earnings[i][j] - alpha[j] - beta[i]
 
-def cycle(tab):
-    return 0
+    return stage
+
+
+def calculate_ab(tab, earnings):
+    def alpha_row(alpha, beta, n):
+        for i in range(len(beta)):
+            if beta[i] is None and tab[i][n] != 0:
+                beta[i] = earnings[i][n] - alpha[n]
+                alpha, beta = beta_row(alpha, beta, i)
+        return alpha, beta
+
+    def beta_row(alpha, beta, m):
+        for i in range(len(alpha)):
+            if alpha[i] is None and tab[m][i] != 0:
+                alpha[i] = earnings[m][i] - beta[m]
+                alpha, beta = beta_row(alpha, beta, i)
+        return alpha, beta
+
+    alpha = [None for _ in range(len(tab[0]))]
+    beta = [None for _ in range(len(tab))]
+    alpha[0] = 0
+    alpha, beta = alpha_row(alpha, beta, 0)
+    return alpha, beta
+
+
+def is_optimal(stage, alpha, beta):
+    for i in range(len(beta)):
+        for j in range(len(alpha)):
+            if stage[i][j] is not None and stage[i][j] > 0:
+                return False
+    return True
+
+
+def cycle(tab, stage, alpha, beta):
+    n = None
+    m = None
+    for i in range(len(beta)):
+        for j in range(len(alpha)):
+            if stage[i][j] is not None and stage[i][j] > 0:
+                if n is not None:
+                    if stage[i][j] > stage[n][m]:
+                        n = i
+                        m = j
+                else:
+                    n = i
+                    m = j
+
+    for i in range(len(beta)):
+        if stage[i][m] is None:
+            for j in range(len(alpha)):
+                if stage[i][j] is None and j != m:
+                    if stage[n][j] is None:
+                        value = np.amax([tab[n][m], tab[i][j]])
+                        tab[n][m] -= value
+                        tab[i][j] -= value
+                        tab[n][j] += value
+                        tab[i][m] += value
+
+    return tab
+
 
 def calculate_step(tab, earnings):
-    alpha, beta = calcucate_ab(tab, earnings)
-    stage = calculate_optimum(alpha, beta)
-    if is_optimal(tab):
-        return tab
-    tab = cycle(tab)
-    while(is_optimal(stage)):
-        alpha, beta = calcucate_ab(tab, earnings)
+    alpha, beta = calculate_ab(tab, earnings)
+    print(alpha)
+    print(beta)
+    stage = calculate_optimum(tab, alpha, beta, earnings)
+
+    while not is_optimal(stage, alpha, beta):
+        alpha, beta = calculate_ab(tab, earnings)
         stage = calculate_optimum(alpha, beta)
+        tab = cycle(tab)
+
     return tab
+
 
 if __name__ == '__main__':
     sellers = [20, 30, 65]
     buyers = [10, 28, 27, 50]
-    earnings = [[12, 6, 0],[1, 4, 0],[3, -1, 0],[0, 0, 0]]
+    earnings = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
 
     tab = calculate_total(sellers, buyers, earnings)
-    #print_table(tab)
+    # print_table(tab)
     print(np.transpose(np.matrix(tab)))
