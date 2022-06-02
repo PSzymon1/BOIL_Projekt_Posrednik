@@ -133,7 +133,7 @@ if __name__ == '__main__':
     sellers = [20, 30, 65]
     buyers = [10, 28, 27, 50]
     earnings = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
-    e = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
+    e = np.copy(earnings)
     tab = calculate_total(sellers, buyers, earnings, e)
     # print_table(tab)
     print(np.transpose(np.matrix(tab)))
