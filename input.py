@@ -164,13 +164,20 @@ def step1():
     def clicked():
         l_odb=int(txt_odb.get("1.0", "end-1c"))
         l_dos=int(txt_dos.get("1.0", "end-1c"))
+        if(l_odb>0 and l_dos>0 and l_odb<10 and l_dos<10):
+            get_data(l_dos, l_odb)
+        else:
+            app = QApplication([])
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage("Error! Niepoprawne wartości!")
+            app.exec_()
         #print(l_dos,l_odb)
 
         #app = QApplication(sys.argv)
         #app.aboutToQuit.connect(app.deleteLater)
         #app.setStyle(QStyleFactory.create("gtk"))
         #app.exec_()
-        get_data(l_dos,l_odb)
+        #get_data(l_dos,l_odb)
 
     label1 = Label(text="Liczba odbiorców =")
     txt_odb = Text(root, width=5, height=1)
