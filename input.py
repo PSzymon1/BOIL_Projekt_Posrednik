@@ -57,6 +57,7 @@ class Table_koszty_transportu:
         total_rows = l_dos+1
         total_columns = l_odb+1
 
+
         for i in range(total_rows):
             for j in range(total_columns):
                 self.e = Entry(root, width=10, fg='blue',
@@ -112,9 +113,8 @@ def get_data(l_dos,l_odb):
                 while (j < len(txt_odbiorcy)/2):
                     temp.append(int(txt_odbiorcy[j*2+1].get())-int(txt_transport[j+i*l_odb].get())-int(txt_dostawcy[i*2+1].get()))
                     j+=1
-                    #print(len(txt_odbiorcy), j, i, temp)
                 temp.append(0)
-                #print(temp)
+
                 earnings.append(temp)
                 j=0
                 i+=1
@@ -125,30 +125,29 @@ def get_data(l_dos,l_odb):
                 j+=2
             earnings.append(temp)
 
-
-
-
-
-
-
             #app = QApplication(sys.argv)
             #app.aboutToQuit.connect(app.deleteLater)
             #app.setStyle(QStyleFactory.create("gtk"))
             #screen = PrettyWidget(events, activities)
             #screen.show()
             #app.exec_()
+
             e = np.copy(earnings)
             tab = calculate_total(sellers, buyers, earnings, e)
             print('wynik:')
             print("====================================")
             print(np.transpose(np.matrix(tab)))
-            #(tab)
         else:
             app = QApplication([])
             error_dialog = QtWidgets.QErrorMessage()
             error_dialog.showMessage(err)
             app.exec_()
 
+    label_trans = Label(root,text="Koszty transportu")
+    #label_trans.grid(column = 4, row= 1)
+    #e = Entry(root, width=10 * (l_odb + 1), fg='blue',font=('Arial', 16, 'bold'))
+    label_trans.grid(row=2, column=6)
+    #e.insert(END, "Tabela kosztów transportu")
     btn = Button(root, text="Zatwierdź", command=clicked)
     btn.grid(column=8, row=l_odb+l_dos+2)
     root.mainloop()
@@ -160,7 +159,7 @@ def step1():
     def clicked():
         l_odb=int(txt_odb.get("1.0", "end-1c"))
         l_dos=int(txt_dos.get("1.0", "end-1c"))
-        print(l_dos,l_odb)
+        #print(l_dos,l_odb)
 
         #app = QApplication(sys.argv)
         #app.aboutToQuit.connect(app.deleteLater)
