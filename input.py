@@ -114,6 +114,7 @@ def get_data(l_dos,l_odb):
                     temp.append(int(txt_odbiorcy[j*2+1].get())-int(txt_transport[j+i*l_odb].get())-int(txt_dostawcy[i*2+1].get()))
                     j+=1
                 temp.append(0)
+
                 earnings.append(temp)
                 j=0
                 i+=1
@@ -130,9 +131,12 @@ def get_data(l_dos,l_odb):
             #screen = PrettyWidget(events, activities)
             #screen.show()
             #app.exec_()
-            print(sellers)
-            print(buyers)
-            print(earnings)
+
+            e = np.copy(earnings)
+            tab = calculate_total(sellers, buyers, earnings, e)
+            print('wynik:')
+            print("====================================")
+            print(np.transpose(np.matrix(tab)))
         else:
             app = QApplication([])
             error_dialog = QtWidgets.QErrorMessage()
