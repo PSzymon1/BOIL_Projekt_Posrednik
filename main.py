@@ -20,7 +20,7 @@ def iterate(table, earnings):
                 alpha[i] = table[i][j] - beta[j]
 
 
-def calculate_total(sellers, buyers, earnings):
+def calculate_total(sellers, buyers, earnings, e_input):
     sell_amt = sum(sellers)
     buy_amt = sum(buyers)
     temp_sellers = sellers
@@ -41,8 +41,8 @@ def calculate_total(sellers, buyers, earnings):
                         table[i][j] = temp_sellers[j]
                         temp_buyers[i] -= temp_sellers[j]
                         temp_sellers[j] = 0
-
-    table = calculate_step(table, earnings)
+    print(e_input)
+    table = calculate_step(table, e_input)
     return table
 
 
@@ -69,9 +69,9 @@ def calculate_ab(tab, earnings):
         for i in range(len(alpha)):
             if alpha[i] is None and tab[m][i] != 0:
                 alpha[i] = earnings[m][i] - beta[m]
-                alpha, beta = beta_row(alpha, beta, i)
+                alpha, beta = alpha_row(alpha, beta, i)
         return alpha, beta
-
+    #print(earnings)
     alpha = [None for _ in range(len(tab[0]))]
     beta = [None for _ in range(len(tab))]
     alpha[0] = 0
@@ -117,14 +117,14 @@ def cycle(tab, stage, alpha, beta):
 
 def calculate_step(tab, earnings):
     alpha, beta = calculate_ab(tab, earnings)
-    print(alpha)
-    print(beta)
+    #print(alpha)
+    #print(beta)
     stage = calculate_optimum(tab, alpha, beta, earnings)
 
     while not is_optimal(stage, alpha, beta):
         alpha, beta = calculate_ab(tab, earnings)
-        stage = calculate_optimum(alpha, beta)
-        tab = cycle(tab)
+        stage = calculate_optimum(tab, alpha, beta, earnings)
+        tab = cycle(tab, stage, alpha, beta)
 
     return tab
 
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     sellers = [20, 30, 65]
     buyers = [10, 28, 27, 50]
     earnings = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
-
-    tab = calculate_total(sellers, buyers, earnings)
+    e = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
+    tab = calculate_total(sellers, buyers, earnings, e)
     # print_table(tab)
     print(np.transpose(np.matrix(tab)))
