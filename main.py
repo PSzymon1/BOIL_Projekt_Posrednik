@@ -117,14 +117,18 @@ def cycle(tab, stage, alpha, beta):
 
 def calculate_step(tab, earnings):
     alpha, beta = calculate_ab(tab, earnings)
-    #print(alpha)
-    #print(beta)
+    print(alpha)
+    print(beta)
     stage = calculate_optimum(tab, alpha, beta, earnings)
-
+    i = 0
     while not is_optimal(stage, alpha, beta):
         alpha, beta = calculate_ab(tab, earnings)
         stage = calculate_optimum(tab, alpha, beta, earnings)
         tab = cycle(tab, stage, alpha, beta)
+        i += 1
+        if i > 1000:
+            print("Optimal solution is unreachable")
+            break
 
     return tab
 
