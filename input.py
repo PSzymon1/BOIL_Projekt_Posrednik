@@ -162,8 +162,8 @@ def step1():
     root=Tk()
 
     def clicked():
-        l_odb=int(txt_odb.get("1.0", "end-1c"))
-        l_dos=int(txt_dos.get("1.0", "end-1c"))
+        l_odb=int(txt_odb.get())
+        l_dos=int(txt_dos.get())
         if(l_odb>0 and l_dos>0 and l_odb<10 and l_dos<10):
             get_data(l_dos, l_odb)
         else:
@@ -180,9 +180,9 @@ def step1():
         #get_data(l_dos,l_odb)
 
     label1 = Label(text="Liczba odbiorców =")
-    txt_odb = Text(root, width=5, height=1)
+    txt_odb = Entry(root, width=5)
     label2 = Label(text="Liczba dostawców =")
-    txt_dos = Text(root, width=5, height=1)
+    txt_dos = Entry(root, width=5)
     btn = Button(root, text="Zatwierdź", command=clicked)
 
     label1.grid(column=1, row=1)
