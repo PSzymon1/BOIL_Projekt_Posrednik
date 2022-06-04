@@ -1,3 +1,6 @@
+from PyQt5.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
 import numpy as np
 
 
@@ -41,7 +44,7 @@ def calculate_total(sellers, buyers, earnings, e_input):
                         table[i][j] = temp_sellers[j]
                         temp_buyers[i] -= temp_sellers[j]
                         temp_sellers[j] = 0
-    print(e_input)
+    print('input', e_input)
     table = calculate_step(table, e_input)
     return table
 
@@ -71,7 +74,7 @@ def calculate_ab(tab, earnings):
                 alpha[i] = earnings[m][i] - beta[m]
                 alpha, beta = alpha_row(alpha, beta, i)
         return alpha, beta
-    #print(earnings)
+    # print(earnings)
     alpha = [None for _ in range(len(tab[0]))]
     beta = [None for _ in range(len(tab))]
     alpha[0] = 0
@@ -117,8 +120,8 @@ def cycle(tab, stage, alpha, beta):
 
 def calculate_step(tab, earnings):
     alpha, beta = calculate_ab(tab, earnings)
-    print(alpha)
-    print(beta)
+    print('alpha', alpha)
+    print('beta', beta)
     stage = calculate_optimum(tab, alpha, beta, earnings)
     i = 0
     while not is_optimal(stage, alpha, beta):
@@ -133,6 +136,56 @@ def calculate_step(tab, earnings):
     return tab
 
 
+class TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
+
+    def rowCount(self, index):
+        # The length of the outer list.
+        return len(self._data)
+
+    def columnCount(self, index):
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])
+
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self, data):
+        super().__init__()
+        print(type(data))
+        if type(data) != list:
+            if type(data) == np.array:
+                display = data
+            if type(data) == np.matrix:
+                display = data.tolist()
+        print(type(display))
+
+        self.table = QtWidgets.QTableView()
+        self.optimized = QtWidgets.QLabel('koszt')
+        font = self.optimized.font()
+        font.setPointSize(30)
+        self.optimized.setFont(font)
+        self.optimized.setAlignment(Qt.AlignJustify | Qt.AlignVCenter)
+        self.model = TableModel(display)
+        self.table.setModel(self.model)
+
+        self.setCentralWidget(self.optimized)
+        self.setCentralWidget(self.table)
+
+        # self.fitToTable()
+        self.setWindowTitle("Wynik obliczen")
+        self.setFixedSize(self.table.height(), self.table.width())
+
+
 if __name__ == '__main__':
     sellers = [20, 30, 65]
     buyers = [10, 28, 27, 50]
@@ -140,4 +193,9 @@ if __name__ == '__main__':
     e = np.copy(earnings)
     tab = calculate_total(sellers, buyers, earnings, e)
     # print_table(tab)
-    print(np.transpose(np.matrix(tab)))
+    data = np.transpose(np.matrix(tab))
+    print(data)
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow(data)
+    window.show()
+    app.exec_()
