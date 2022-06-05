@@ -136,6 +136,20 @@ def calculate_step(tab, earnings):
     return tab
 
 
+def calculate_outcome(data, earnings):
+    total = 0
+    equation = ''
+    for i in range(len(data)):
+        for j in range(len(data[0])):
+            if data[i][j] > 0 and earnings[i][j] > 0:
+                print(data[i][j], earnings[i][j])
+                total = total + (data[i][j] * earnings[i][j])
+                equation = equation + \
+                    '{} * {} + '.format(data[i][j], earnings[i][j])
+    equation = equation[:-2]
+    return total, equation
+
+
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(TableModel, self).__init__()
@@ -159,7 +173,7 @@ class TableModel(QtCore.QAbstractTableModel):
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, data):
+    def __init__(self, data, earnings):
         super().__init__()
         print(type(data))
         if type(data) != list:
@@ -169,21 +183,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 display = data.tolist()
         print(type(display))
 
+        earnings = np.transpose(earnings).tolist()
         self.table = QtWidgets.QTableView()
-        self.optimized = QtWidgets.QLabel('koszt')
+        self.table_earnings = QtWidgets.QTableView()
+
+        total, equation = calculate_outcome(display, earnings)
+        self.optimized = QtWidgets.QLabel(
+            'Równanie końcowe: {} =\nZysk całkowity = {}\n'.format(equation, total))
+
         font = self.optimized.font()
         font.setPointSize(30)
         self.optimized.setFont(font)
         self.optimized.setAlignment(Qt.AlignJustify | Qt.AlignVCenter)
+
         self.model = TableModel(display)
         self.table.setModel(self.model)
+        self.model_earnings = TableModel(earnings)
+        self.table_earnings.setModel(self.model_earnings)
 
         self.setCentralWidget(self.optimized)
-        self.setCentralWidget(self.table)
+        self.setMenuWidget(self.table)
 
         # self.fitToTable()
-        self.setWindowTitle("Wynik obliczen")
-        self.setFixedSize(self.table.height(), self.table.width())
+        self.setWindowTitle("Problem pośrednika - wynik")
+        # self.setSize(self.table.height(), self.table.width())
 
 
 if __name__ == '__main__':
@@ -196,6 +219,6 @@ if __name__ == '__main__':
     data = np.transpose(np.matrix(tab))
     print(data)
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow(data)
+    window = MainWindow(data, e)
     window.show()
     app.exec_()
