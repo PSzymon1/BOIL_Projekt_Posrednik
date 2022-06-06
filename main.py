@@ -3,6 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import numpy as np
 
+from input import *
+
 
 def print_table(table):
     for i in range(len(table)):
@@ -210,15 +212,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-    sellers = [20, 30, 65]
-    buyers = [10, 28, 27, 50]
-    earnings = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
-    e = np.copy(earnings)
-    tab = calculate_total(sellers, buyers, earnings, e)
-    # print_table(tab)
-    data = np.transpose(np.matrix(tab))
-    print(data)
-    app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow(data, e)
-    window.show()
+    # sellers = [20, 30, 65]
+    # buyers = [10, 28, 27, 50]
+    # earnings = [[12, 6, 0], [1, 4, 0], [3, -1, 0], [0, 0, 0]]
+    # e = np.copy(earnings)
+    # tab = calculate_total(sellers, buyers, earnings, e)
+    # # print_table(tab)
+    # data = np.transpose(np.matrix(tab))
+    # print(data)
+    # app = QtWidgets.QApplication(sys.argv)
+    # window = MainWindow(data, e)
+    # window.show()
+    # app.exec_()
+    app = QApplication(sys.argv)
+    screen = Step1()
     app.exec_()

@@ -183,6 +183,9 @@ class GetData(QWidget):
             print('wynik:')
             print("====================================")
             print(np.transpose(np.matrix(tab)))
+            data = np.transpose(np.matrix(tab))
+            self.w = MainWindow(data, e)
+            self.w.show()
         else:
             QMessageBox.about(self, "Error", "Niepoprawne wartości!")
 
@@ -235,5 +238,4 @@ class Step1(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     screen = Step1()
-    window=GetData(1,5)
     app.exec_()
