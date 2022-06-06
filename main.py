@@ -188,9 +188,12 @@ class MainWindow(QtWidgets.QMainWindow):
         earnings = np.transpose(earnings).tolist()
         self.table = QtWidgets.QTableView()
         self.table_earnings = QtWidgets.QTableView()
+        # self.table = QtWidgets.QTableWidget()
+        # self.table_earnings = QtWidgets.QTableWidget()
 
         total, equation = calculate_outcome(display, earnings)
-        self.optimized = QtWidgets.QLabel(
+        self.optimized = QtWidgets.QLabel()
+        self.optimized.setText(
             'Równanie końcowe: {} =\nZysk całkowity = {}\n'.format(equation, total))
 
         font = self.optimized.font()
@@ -202,9 +205,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table.setModel(self.model)
         self.model_earnings = TableModel(earnings)
         self.table_earnings.setModel(self.model_earnings)
+        self.table.setMinimumSize(QSize(400, 400))
 
         self.setCentralWidget(self.optimized)
         self.setMenuWidget(self.table)
+
+        # mainLayout = QGridLayout()
+        # mainLayout.addWidget(self.optimized, 0, 0)
+        # mainLayout.addWidget(self.table, 1, 0)
+        # self.setLayout(mainLayout)
+
 
         # self.fitToTable()
         self.setWindowTitle("Problem pośrednika - wynik")
